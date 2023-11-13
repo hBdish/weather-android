@@ -1,6 +1,6 @@
-package com.example.weather
+package com.example.weather.adapters
 
-data class DayItem (
+data class WeatherModel (
     val city: String,
     val time: String,
     val condition: String,
@@ -10,5 +10,3 @@ data class DayItem (
     val minTemp: String,
     val hoursForecast: String
 )
-
-
