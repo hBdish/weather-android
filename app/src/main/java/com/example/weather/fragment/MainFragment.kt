@@ -80,12 +80,23 @@ class MainFragment : Fragment() {
         fLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         val adapter = VpAdapter(activity as FragmentActivity, fList)
         vp.adapter = adapter
+
         TabLayoutMediator(tabLayout, vp) { tab, position ->
             tab.text = tList[position]
         }.attach()
-        ibSync.setOnClickListener{
+
+        ibSync.setOnClickListener {
             tabLayout.selectTab(tabLayout.getTabAt(0))
             checkLocation()
+        }
+
+        ibSearch.setOnClickListener {
+            DialogManager.searchByNameDialog(requireContext(), object : DialogManager.Listener {
+                override fun onClick(name: String?) {
+                    name?.let { it1 -> requestWeatherData(it1) }
+                }
+
+            })
         }
     }
 
@@ -94,7 +105,7 @@ class MainFragment : Fragment() {
             getLocation()
         } else {
             DialogManager.locationSettingsDialog(requireContext(), object : DialogManager.Listener {
-                override fun onClick() {
+                override fun onClick(name: String?) {
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
 
