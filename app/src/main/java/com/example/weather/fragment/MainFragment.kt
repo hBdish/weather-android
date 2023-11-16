@@ -67,11 +67,13 @@ class MainFragment : Fragment() {
 
     private fun updateCurrentCard() = with(binding) {
         model.liveDataCurrent.observe(viewLifecycleOwner) {
+            val maxMinTemp = "${it.maxTemp}℃/${it.minTemp}℃"
+
             tvDate.text = it.time
             tvCity.text = it.city
-            tvTemp.text = it.currentTemp
+            tvTemp.text = it.currentTemp.ifEmpty { maxMinTemp }
             tvCondition.text = it.condition
-            tvMaxMin.text = "${it.maxTemp}℃/${it.minTemp}℃"
+            tvMaxMin.text = if (it.currentTemp.isEmpty()) "" else maxMinTemp
             Picasso.get().load("https:" + it.imageUrl).into(ivWeather)
         }
     }
@@ -96,7 +98,7 @@ class MainFragment : Fragment() {
         val url = "https://api.weatherapi.com/v1/forecast.json" +
                 "?key=$API_KEY" +
                 "&q=$city" +
-                "&days=2" +
+                "&days=3" +
                 "&aqi=no" +
                 "&alerts=no"
 
@@ -137,8 +139,8 @@ class MainFragment : Fragment() {
                     .getJSONObject("condition")
                     .getString("icon"),
                 "",
-                day.getJSONObject("day").getString("maxtemp_c"),
-                day.getJSONObject("day").getString("mintemp_c"),
+                day.getJSONObject("day").getString("maxtemp_c").toFloat().toInt().toString(),
+                day.getJSONObject("day").getString("mintemp_c").toFloat().toInt().toString(),
                 day.getJSONArray("hour").toString()
             )
             list.add(item)
